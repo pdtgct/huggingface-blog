@@ -21,9 +21,11 @@ Hugging Face PRO users now have access to exclusive API endpoints for a curated 
 - [Supported Models](#supported-models)
 - [Getting started with Inference for PROs](#getting-started-with-inference-for-pros)
 - [Applications](#applications)
-  - [Chat with Llama 2 and Code Llama](#chat-with-llama-2-and-code-llama)
+  - [Chat with Llama 2 and Code Llama 34B](#chat-with-llama-2-and-code-llama-34b)
+  - [Chat with Code Llama 70B](#chat-with-code-llama-70b)
   - [Code infilling with Code Llama](#code-infilling-with-code-llama)
   - [Stable Diffusion XL](#stable-diffusion-xl)
+- [Messages API](#messages-api)
 - [Generation Parameters](#generation-parameters)
   - [Controlling Text Generation](#controlling-text-generation)
   - [Controlling Image Generation](#controlling-image-generation)
@@ -36,22 +38,27 @@ Hugging Face PRO users now have access to exclusive API endpoints for a curated 
 
 In addition to thousands of public models available in the Hub, PRO users get free access and higher rate limits to the following state-of-the-art models:
 
-| Model               | Size                                                                                                                                                                                       | Context Length | Use                                   |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- | ------------------------------------- |
-| Zephyr 7B β         | [7B](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta) | 4k tokens      | Highest-ranked chat model at the 7B weight |
-| Llama 2 Chat        | [7B](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf), [13B](https://huggingface.co/meta-llama/Llama-2-13b-chat-hf), and [70B](https://huggingface.co/meta-llama/Llama-2-70b-chat-hf) | 4k tokens      | One of the best conversational models |
-| Code Llama Base     | [7B](https://huggingface.co/codellama/CodeLlama-7b-hf) and [13B](https://huggingface.co/codellama/CodeLlama-13b-hf)                                                                        | 4k tokens      | Autocomplete and infill code          |
-| Code Llama Instruct | [34B](https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf)                                                                                                                          | 16k tokens     | Conversational code assistant         |
-| Stable Diffusion XL | [3B UNet](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)                                                                                                                 | -              | Generate images                       |
+| Model                          | Size                                                                                                                                                                                       | Context Length | Use                                                          |
+|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|--------------------------------------------------------------|
+| Meta Llama 3 Instruct          | [8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct), [70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct)                                                       | 8k tokens      | One of the best chat models                                  |
+| Mixtral 8x7B Instruct          | [45B MOE](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)                                                                                                                     | 32k tokens     | Performance comparable to top proprietary models             |
+| Nous Hermes 2 Mixtral 8x7B DPO | [45B MOE](https://huggingface.co/NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO)                                                                                                              | 32k tokens     | Further trained over Mixtral 8x7B MoE                        |
+| Zephyr 7B β                    | [7B](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta)                                                                                                                                  | 4k tokens      | One of the best chat models at the 7B weight                 |
+| Llama 2 Chat                   | [7B](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf), [13B](https://huggingface.co/meta-llama/Llama-2-13b-chat-hf) | 4k tokens      | One of the best conversational models                        |
+| Mistral 7B Instruct v0.2       | [7B](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)                                                                                                                            | 4k tokens      | One of the best chat models at the 7B weight                 |
+| Code Llama Base                | [7B](https://huggingface.co/codellama/CodeLlama-7b-hf) and [13B](https://huggingface.co/codellama/CodeLlama-13b-hf)                                                                        | 4k tokens      | Autocomplete and infill code                                 |
+| Code Llama Instruct            | [34B](https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf)                                                                                                                          | 16k tokens     | Conversational code assistant                                |
+| Stable Diffusion XL            | [3B UNet](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)                                                                                                                 | -              | Generate images                                              |
+| Bark                           | [0.9B](https://huggingface.co/suno/bark)                                                                                                                                                   | -              | Text to audio generation                                     |
 
 Inference for PROs makes it easy to experiment and prototype with new models without having to deploy them on your own infrastructure. It gives PRO users access to ready-to-use HTTP endpoints for all the models listed above. It’s not meant to be used for heavy production applications - for that, we recommend using [Inference Endpoints](https://ui.endpoints.huggingface.co/catalog). Inference for PROs also allows using applications that depend upon an LLM endpoint, such as using a [VS Code extension](https://marketplace.visualstudio.com/items?itemName=HuggingFace.huggingface-vscode) for code completion, or have your own version of [Hugging Chat](http://hf.co/chat).
 
 ## Getting started with Inference For PROs
 
-Using Inference for PROs is as simple as sending a POST request to the API endpoint for the model you want to run. You'll also need to get a PRO account authentication token from [your token settings page](https://huggingface.co/settings/tokens) and use it in the request. For example, to generate text using [Llama 2 70B Chat](https://huggingface.co/meta-llama/Llama-2-70b-chat-hf) in a terminal session, you'd do something like:
+Using Inference for PROs is as simple as sending a POST request to the API endpoint for the model you want to run. You'll also need to get a PRO account authentication token from [your token settings page](https://huggingface.co/settings/tokens) and use it in the request. For example, to generate text using [Meta Llama 3 8B Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) in a terminal session, you'd do something like:
 
 ```bash
-curl https://api-inference.huggingface.co/models/meta-llama/Llama-2-70b-chat-hf \
+curl https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8b-Instruct \
     -X POST \
     -d '{"inputs": "In a surprising turn of events, "}' \
     -H "Content-Type: application/json" \
@@ -63,7 +70,7 @@ Which would print something like this:
 ```json
 [
   {
-    "generated_text": "In a surprising turn of events, 20th Century Fox has released a new trailer for Ridley Scott's Alien"
+    "generated_text": "In a surprising turn of events, 2021 has brought us not one, but TWO seasons of our beloved TV show, \"Stranger Things.\""
   }
 ]
 ```
@@ -71,19 +78,11 @@ Which would print something like this:
 You can also use many of the familiar transformers generation parameters, like `temperature` or `max_new_tokens`:
 
 ```bash
-curl https://api-inference.huggingface.co/models/meta-llama/Llama-2-70b-chat-hf \
+curl https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8b-Instruct \
     -X POST \
     -d '{"inputs": "In a surprising turn of events, ", "parameters": {"temperature": 0.7, "max_new_tokens": 100}}' \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer <YOUR_TOKEN>"
-```
-
-```json
-[
-  {
-    "generated_text": "In a surprising turn of events, 2K has announced that it will be releasing a new free-to-play game called NBA 2K23 Arcade Edition. This game will be available on Apple iOS devices and will allow players to compete against each other in quick, 3-on-3 basketball matches.\n\nThe game promises to deliver fast-paced, action-packed gameplay, with players able to choose from a variety of NBA teams and players, including some of the biggest"
-  }
-]
 ```
 
 For more details on the generation parameters, please take a look at [_Controlling Text Generation_](#controlling-text-generation) below.
@@ -99,7 +98,7 @@ pip install huggingface_hub
 ```python
 from huggingface_hub import InferenceClient
 
-client = InferenceClient(model="meta-llama/Llama-2-70b-chat-hf", token=YOUR_TOKEN)
+client = InferenceClient(model="meta-llama/Meta-Llama-3-8b-Instruct", token=YOUR_TOKEN)
 
 output = client.text_generation("Can you please let us know more details about your ")
 print(output)
@@ -111,7 +110,7 @@ In addition to Python, you can also use JavaScript to integrate inference calls 
 
 ## Applications
 
-### Chat with Llama 2 and Code Llama
+### Chat with Llama 2 and Code Llama 34B
 
 Models prepared to follow chat conversations are trained with very particular and specific chat templates that depend on the model used. You need to be careful about the format the model expects and replicate it in your queries.
 
@@ -127,6 +126,7 @@ If a question does not make any sense, or is not factually coherent, explain why
 There's a llama in my garden 😱 What should I do? [/INST]
 """
 
+client = InferenceClient(model="codellama/CodeLlama-13b-hf", token=YOUR_TOKEN)
 response = client.text_generation(prompt, max_new_tokens=200)
 print(response)
 ```
@@ -205,6 +205,36 @@ image = sdxl.text_to_image(
 
 For more details on how to control generation, please take a look at [this section](#controlling-image-generation).
 
+## Messages API
+
+All text generation models now support the Messages API, so they are compatible with OpenAI client libraries, including LangChain and LlamaIndex. The following snippet shows how to use the official `openai` client library with Llama 3.1 70B:
+
+```py
+from openai import OpenAI
+import huggingface_hub
+
+# Initialize the client, pointing it to one of the available models
+client = OpenAI(
+    base_url="https://api-inference.huggingface.co/v1/",
+    api_key=huggingface_hub.get_token(),
+)
+chat_completion = client.chat.completions.create(
+    model="meta-llama/Meta-Llama-3.1-70B-Instruct",
+    messages=[
+        {"role": "system", "content": "You are a helpful an honest programming assistant."},
+        {"role": "user", "content": "Is Rust better than Python?"},
+    ],
+    stream=True,
+    max_tokens=500
+)
+
+# iterate and print stream
+for message in chat_completion:
+    print(message.choices[0].delta.content, end="")
+```
+
+For more details about the use of the Messages API, please [check this post](https://huggingface.co/blog/tgi-messages-api).
+
 ## Generation Parameters
 
 ### Controlling Text Generation
@@ -242,7 +272,7 @@ If you run the same generation multiple times, you’ll see that the result retu
 If you are using `InferenceClient`, you can simply append it to the `headers` client property:
 
 ```Python
-client = InferenceClient(model="meta-llama/Llama-2-70b-chat-hf", token=YOUR_TOKEN)
+client = InferenceClient(model="meta-llama/Meta-Llama-3-8b-Instruct", token=YOUR_TOKEN)
 client.headers["x-use-cache"] = "0"
 
 output = client.text_generation("In a surprising turn of events, ", do_sample=True)
@@ -285,7 +315,7 @@ for token in client.text_generation("How do you make cheese?", max_new_tokens=12
 To use the generate_stream endpoint with curl, you can add the `-N`/`--no-buffer` flag, which disables curl default buffering and shows data as it arrives from the server.
 
 ```
-curl -N https://api-inference.huggingface.co/models/meta-llama/Llama-2-70b-chat-hf \
+curl -N https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8b-Instruct \
     -X POST \
     -d '{"inputs": "In a surprising turn of events, ", "parameters": {"temperature": 0.7, "max_new_tokens": 100}}' \
     -H "Content-Type: application/json" \

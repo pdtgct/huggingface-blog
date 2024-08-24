@@ -227,7 +227,7 @@ More experts lead to improved sample efficiency and faster speedup, but these ar
 
 ## Fine-tuning MoEs
 
-> Mixtral is supported with version 4.36.0 of transformers. You can install it with `pip install "transformers==4.36.0 --upgrade`
+> Mixtral is supported with version 4.36.0 of transformers. You can install it with `pip install transformers==4.36.0 --upgrade`
 
 The overfitting dynamics are very different between dense and sparse models. Sparse models are more prone to overfitting, so we can explore higher regularization (e.g. dropout) within the experts themselves (e.g. we can have one dropout rate for the dense layers and another, higher, dropout for the sparse layers). 
 
@@ -241,7 +241,7 @@ Switch Transformers observed that at a fixed pretrain perplexity, the sparse mod
 </figure>
 
 
-One could experiment with freezing all non-expert weights. That led to a huge performance drop, which was expected as the MoE layers correspond to most of the network. We could try the opposite: freezing only the parameters in MoE layers, which turned out to work almost as well as updating all parameters. This can help speed up and reduce memory for fine-tuning.
+One could experiment with freezing all non-expert weights. That is, we'll only update the MoE layers. This leads to a huge performance drop. We could try the opposite: freezing only the parameters in MoE layers, which worked almost as well as updating all parameters. This can help speed up and reduce memory for fine-tuning. This can be somewhat counter-intuitive as 80% of the parameters are in the MoE layers (in the ST-MoE project). Their hypothesis for that architecture is that, as expert layers only occur every 1/4 layers, and each token sees at most two experts per layer, updating the MoE parameters affects much fewer layers than updating other parameters.
 
 <figure class="image text-center">
   <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/blog/moe/07_superglue_bars.png" alt="Only updating the non MoE layers works well in fine-tuning">
